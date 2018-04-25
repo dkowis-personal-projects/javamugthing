@@ -1,0 +1,36 @@
+plugins {
+    id 'base'
+    id "org.mohme.gradle.elm-plugin" version "1.0.0"
+}
+
+
+configurations {
+    webResources
+}
+
+task("copyProd", type: Copy) {
+    description "Copies the prod elements to the build dir"
+
+    from 'src/html'
+    include 'index.html'
+    include 'styles.css'
+
+    into "${buildDir}/dist"
+}
+
+task("copyElm", type: Copy) {
+    description "Copies the built elm files into the dist dir"
+    dependsOn "elmMake"
+
+    from "${buildDir}/elm"
+    into "${buildDir}/dist"
+}
+
+task("stage") {
+    dependsOn "copyProd", "copyElm"
+}
+
+
+artifacts {
+    webResources(file("${buildDir}/dist")) { builtBy stage }
+}

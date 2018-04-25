@@ -1,0 +1,3 @@
+# turn off flyway for now
+spring.flyway.enabled: false # Whether to enable flyway.
+
