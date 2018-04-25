@@ -1,0 +1,16 @@
+plugins {
+    id "base"
+}
+
+evaluationDependsOn(':backend')
+
+task copyBootJar(type: Copy, overwrite: true) {
+    dependsOn ":backend:bootJar"
+    from project(":backend").bootJar
+    into "${buildDir}/libs"
+    rename { filename ->
+        filename.replace "backend-${project(":backend").version}", 'monopolytracker'
+    }
+}
+
+tasks.build.dependsOn(copyBootJar)
