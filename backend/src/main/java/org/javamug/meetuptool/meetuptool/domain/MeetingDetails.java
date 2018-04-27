@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class MeetingDetails {
-    private String topic;
+    private Meeting meeting;
     private List<Attendee> attendees = Collections.emptyList();
     private List<Prize> prizes = Collections.emptyList();
 

@@ -18,6 +18,7 @@ public final class Fake {
     public static final Attendee ANDROID = new Attendee("theZuck@facebook.com", "Mark Zuckerberg", "Facebook");
     public static final Attendee CHEETOH = new Attendee("BESTPRESIDENTOFALLTIME@THEWHITEHOUSEISBESTHOUSE.GOV", "DONALD THE BEST TRUMP", "GUBMINT");
     public static final Attendee DAVID = new Attendee("david@kow.is", "David Kowis", "Southwest Airlines");
+    public static final Attendee JORGE = new Attendee("jorge@landiv.ar", "Jorge Landivar", "DataDog");
 
 
     //Adhoc Prizes

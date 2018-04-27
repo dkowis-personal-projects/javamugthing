@@ -40,6 +40,7 @@ public class ApiController {
         //TODO: implement with the meetup api, and my database
         MeetingDetails details = new MeetingDetails();
         if (id == 0) {
+            details.setMeeting(APRIL_MEETING);
             details.setPrizes(Arrays.asList(
                     AMAZON(Optional.of(DAVID)),
                     INTELLIJ(Optional.of(LARRY)),
@@ -58,6 +59,7 @@ public class ApiController {
                     DAVID
             ));
         } else if (id == 1) {
+            details.setMeeting(NOW_MEETING);
             details.setPrizes(Arrays.asList(
                     AMAZON(Optional.empty()),
                     INTELLIJ(Optional.empty()),
@@ -73,12 +75,12 @@ public class ApiController {
                     LARRY,
                     ANDROID,
                     CHEETOH,
-                    DAVID
+                    DAVID,
+                    JORGE
             ));
         } else {
             throw new MeetingNotFoundException(id);
         }
-
 
         return Mono.just(details);
     }
