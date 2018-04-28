@@ -9,9 +9,9 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Meeting {
+public class MeetupEvent {
 
-    private Integer id;
+    private String id;
     private LocalDate date;
     private String topic;
 }

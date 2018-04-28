@@ -10,6 +10,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Prize {
+    private Long id;
     private String name;
     private Optional<Attendee> winner = Optional.empty();
 }

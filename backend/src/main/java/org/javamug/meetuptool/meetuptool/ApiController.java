@@ -1,87 +1,132 @@
 package org.javamug.meetuptool.meetuptool;
 
-import org.javamug.meetuptool.meetuptool.domain.Meeting;
+import org.javamug.meetuptool.meetuptool.domain.Attendee;
 import org.javamug.meetuptool.meetuptool.domain.MeetingDetails;
+import org.javamug.meetuptool.meetuptool.domain.MeetupEvent;
+import org.javamug.meetuptool.meetuptool.domain.Prize;
 import org.javamug.meetuptool.meetuptool.exceptions.MeetingNotFoundException;
 import org.javamug.meetuptool.meetuptool.exceptions.MeetupToolException;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-
-import static org.javamug.meetuptool.meetuptool.domain.Fake.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api")
 public class ApiController {
 
 
+    private final MeetingDetailsService meetingDetailsService;
+    private final MeetupService meetupService;
+    private final PrizesService prizesService;
+
+    @Autowired
+    public ApiController(
+            MeetingDetailsService meetingDetailsService,
+            MeetupService meetupService,
+            PrizesService prizesService) {
+        this.meetingDetailsService = meetingDetailsService;
+        this.meetupService = meetupService;
+        this.prizesService = prizesService;
+    }
+
     @GetMapping("/meetings")
     @ResponseBody
-    public Mono<List<Meeting>> listMeetings() {
-
-        //TODO: query the meetings list from meetup.com and the database?
-        return Mono.just(Arrays.asList(
-                APRIL_MEETING, NOW_MEETING
-        ));
+    public Mono<List<MeetingDetails>> listMeetings() {
+        //TODO: this should hit the meetup API, and pull in meetups that haven't been turned into meetings yet.
+        return meetingDetailsService.listMeetings()
+                .zipWith(meetupService.listRecentMeetups(), (meetings, meetups) -> {
+                    List<MeetingDetails> allMeetings = meetups.stream()
+                            .map(meetup -> {
+                                MeetingDetails details = new MeetingDetails();
+                                details.setMeetup(meetup);
+                                details.setMeetingId(meetup.getId());
+                                return details;
+                            })
+                            .collect(Collectors.toList());
+                    allMeetings.addAll(meetings);
+                    return allMeetings;
+                });
     }
 
     @GetMapping("/meetings/{id}")
     @ResponseBody
-    public Mono<MeetingDetails> meetingDetails(@PathVariable("id") int id) throws MeetupToolException {
+    public Mono<MeetingDetails> meetingDetails(@PathVariable("id") String id) throws MeetupToolException {
+        //TODO: could be a meetup meeting that hasn't been "created" yet
+        return meetingDetailsService.getMeeting(id)
+                .switchIfEmpty(meetupService.getMeetupById(id).map(meetupEvent -> {
+                    MeetingDetails details = new MeetingDetails();
+                    details.setMeetingId(meetupEvent.getId());
+                    details.setMeetup(meetupEvent);
+                    return details;
+                }))
+                .switchIfEmpty(Mono.error(new MeetingNotFoundException(id)));
+    }
 
-        //TODO: implement with the meetup api, and my database
-        MeetingDetails details = new MeetingDetails();
-        if (id == 0) {
-            details.setMeeting(APRIL_MEETING);
-            details.setPrizes(Arrays.asList(
-                    AMAZON(Optional.of(DAVID)),
-                    INTELLIJ(Optional.of(LARRY)),
-                    AGILE_LEARNER(Optional.of(CHEETOH)),
-                    AMAZON_50_1(Optional.of(ANDROID)),
-                    AMAZON_50_2(Optional.of(LOGAN)),
-                    MANNING_BOOK(Optional.of(DUDE_BRO))
-            ));
-            details.setAttendees(Arrays.asList(
-                    DUDE_BRO,
-                    REAL_PERSON,
-                    LOGAN,
-                    LARRY,
-                    ANDROID,
-                    CHEETOH,
-                    DAVID
-            ));
-        } else if (id == 1) {
-            details.setMeeting(NOW_MEETING);
-            details.setPrizes(Arrays.asList(
-                    AMAZON(Optional.empty()),
-                    INTELLIJ(Optional.empty()),
-                    AGILE_LEARNER(Optional.empty()),
-                    AMAZON_50_1(Optional.empty()),
-                    AMAZON_50_2(Optional.empty()),
-                    MANNING_BOOK(Optional.empty())
-            ));
-            details.setAttendees(Arrays.asList(
-                    DUDE_BRO,
-                    REAL_PERSON,
-                    LOGAN,
-                    LARRY,
-                    ANDROID,
-                    CHEETOH,
-                    DAVID,
-                    JORGE
-            ));
-        } else {
-            throw new MeetingNotFoundException(id);
-        }
+    @PostMapping("/meetings/{meetingId}/start")
+    @ResponseBody
+    public Mono<MeetingDetails> startMeeting(@PathVariable("meetingId") String id) {
+        //Time to load all the things
+        //Get the events from meetup
+        return meetingDetailsService.createMeeting(
+                meetupService.listRecentMeetups()
+                        .flatMapIterable(p -> p)
+                        .filter(event -> event.getId().equals(id))
+                        .single(),
+                meetupService.attendeesForMeetup(id),
+                prizesService.getStandardPrizes()
+        );
+    }
 
-        return Mono.just(details);
+    @GetMapping("/meetings/{meetingId}/prizes")
+    @ResponseBody
+    public Mono<List<Prize>> prizesForMeeting(@PathVariable("meetingId") String meetingId) throws MeetupToolException {
+        return meetingDetailsService.getMeeting(meetingId)
+                .map(MeetingDetails::getPrizes);
+    }
+
+    //TODO: add an ad-hoc prize to the meetup  POST /meetings/{meetingId}/prizes
+    @PostMapping("/meetings/{meetingId}/prizes")
+    @ResponseBody
+    public Mono<List<Prize>> addAddHocPrizeToMeeting(@PathVariable("meetingId") String meetingId, @RequestBody Mono<Prize> adhocPrize) throws MeetupToolException {
+        return meetingDetailsService.addAdhocPrizeToMeeting(meetingId, adhocPrize)
+                .map(MeetingDetails::getPrizes);
+    }
+
+    //TODO: update a winner of the prize PUT /meetings/{meetingId}/prizes/{prizeId}
+    @PutMapping("/meetings/{meetingId}/prizes/{prizeId}")
+    @ResponseBody
+    public Mono<List<Prize>> winPrize(@PathVariable("meetingId") String meetingId,
+                                      @PathVariable("prizeId") long prizeId,
+                                      @RequestBody Mono<Attendee> winner) throws MeetupToolException {
+
+        return meetingDetailsService.winPrize(meetingId, prizeId, winner)
+                .map(MeetingDetails::getPrizes);
+    }
+
+    //TODO: select a random winner that is present from the meetup's attendees GET /meetings/{meetingId}/randomAttendee
+    @GetMapping("/meetings/{meetingId}/randomAttendee")
+    @ResponseBody
+    public Mono<Attendee> selectRandomAttendee(@PathVariable("meetingId") String meetingId) {
+        return meetingDetailsService.selectRandomWinner(meetingDetailsService.getMeeting(meetingId), System.currentTimeMillis());
+    }
+
+    //TODO: mark an attendee non-present PUT /meetings/{meetingId}/notPresent}
+    @PutMapping("/meetings/{meetingId}/notPresent")
+    @ResponseBody
+    public Mono<List<Attendee>> nonPresentAttendee(@PathVariable("meetingId") String meetingId, @RequestBody Mono<Attendee> attendeeMono) throws MeetupToolException {
+        return meetingDetailsService.markAttendeeNonPresent(meetingId, attendeeMono);
+    }
+
+    //TODO: something for "did not want" ? (maybe just to keep a record of it)
+
+    //TODO: Complete prize selection for a meetup POST /meetings/{meetingId}/complete
+    @PostMapping("/meetings/{meetingId}/complete")
+    @ResponseBody
+    public Mono<MeetingDetails> commitMeeting(@PathVariable("meetingId") String meetingId) throws MeetupToolException {
+        return meetingDetailsService.completeMeeting(meetingId);
     }
 }

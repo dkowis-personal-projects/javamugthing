@@ -1,3 +1,6 @@
 # turn off flyway for now
 spring.flyway.enabled: false # Whether to enable flyway.
 
+# MeetupEvent detailsfor their API
+meetup.api:
+  urlname: javamug
