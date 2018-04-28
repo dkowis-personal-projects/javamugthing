@@ -11,14 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.javamug.meetuptool.meetuptool.domain.Fake.APRIL_MEETUP;
-import static org.javamug.meetuptool.meetuptool.domain.Fake.NOW_MEETUP;
+import static org.javamug.meetuptool.meetuptool.domain.Fake.*;
 
 @Service
 public class MeetupService {
     private final String urlname;
     //TODO: make API calls to meetup, but until then use fake data
     private ConcurrentHashMap<String, MeetupEvent> meetupStore = new ConcurrentHashMap<>();
+
+    private ConcurrentHashMap<String, List<Attendee>> meetupAttendees = new ConcurrentHashMap<>();
 
     public MeetupService(
             @Value("${meetup.api.urlname}") String urlname
@@ -27,6 +28,9 @@ public class MeetupService {
         //Store some meetups in the in-memory store
         meetupStore.put("0", APRIL_MEETUP);
         meetupStore.put("1", NOW_MEETUP);
+
+        meetupAttendees.put("1", NOW_ATTENDEES);
+        meetupAttendees.put("0", APRIL_ATTENDEES);
     }
 
     public Mono<MeetupEvent> getMeetupById(String meetupId) {
@@ -46,6 +50,6 @@ public class MeetupService {
 
     //Get the attendees from the meetup API
     public Mono<List<Attendee>> attendeesForMeetup(String meetupId) {
-        return Mono.empty();
+        return Mono.justOrEmpty(meetupAttendees.get(meetupId));
     }
 }

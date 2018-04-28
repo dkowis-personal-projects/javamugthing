@@ -1,5 +1,6 @@
 package org.javamug.meetuptool.meetuptool;
 
+import lombok.extern.slf4j.Slf4j;
 import org.javamug.meetuptool.meetuptool.domain.Attendee;
 import org.javamug.meetuptool.meetuptool.domain.MeetingDetails;
 import org.javamug.meetuptool.meetuptool.domain.MeetupEvent;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api")
+@Slf4j
 public class ApiController {
 
 
@@ -36,6 +38,7 @@ public class ApiController {
     @GetMapping("/meetings")
     @ResponseBody
     public Mono<List<MeetingDetails>> listMeetings() {
+        log.debug("Listing meetings both known and from meetup");
         //TODO: this should hit the meetup API, and pull in meetups that haven't been turned into meetings yet.
         return meetingDetailsService.listMeetings()
                 .zipWith(meetupService.listRecentMeetups(), (meetings, meetups) -> {
@@ -69,6 +72,7 @@ public class ApiController {
     @PostMapping("/meetings/{meetingId}/start")
     @ResponseBody
     public Mono<MeetingDetails> startMeeting(@PathVariable("meetingId") String id) {
+        log.debug("Starting meeting for {}", id);
         //Time to load all the things
         //Get the events from meetup
         return meetingDetailsService.createMeeting(

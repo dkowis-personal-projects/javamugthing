@@ -1,5 +1,6 @@
 package org.javamug.meetuptool.meetuptool;
 
+import lombok.extern.slf4j.Slf4j;
 import org.javamug.meetuptool.meetuptool.domain.Attendee;
 import org.javamug.meetuptool.meetuptool.domain.MeetingDetails;
 import org.javamug.meetuptool.meetuptool.domain.MeetupEvent;
@@ -21,6 +22,7 @@ import static org.javamug.meetuptool.meetuptool.domain.Fake.APRIL_MEETUP;
 import static org.javamug.meetuptool.meetuptool.domain.Fake.APRIL_PRIZES;
 
 @Service
+@Slf4j
 public class MeetingDetailsService {
 
     private AtomicLong sequence = new AtomicLong(0);
@@ -42,6 +44,7 @@ public class MeetingDetailsService {
             Mono<List<Attendee>> attendeesMono,
             Mono<List<Prize>> prizesMono) {
 
+        //TODO: If already created, need to tank somehow
         return meetupMono.zipWith(attendeesMono, (meetup, attendeesList) -> {
             MeetingDetails details = new MeetingDetails();
             details.setMeetingId(Long.toString(sequence.getAndIncrement()));
@@ -53,6 +56,7 @@ public class MeetingDetailsService {
             details.setPrizes(prizeList);
             return details;
         }).doOnNext(details -> {
+            log.debug("Saving the meeting {}", details);
             //save it! as a side effect, and return it
             detailsStore.put(details.getMeetingId(), details);
         });

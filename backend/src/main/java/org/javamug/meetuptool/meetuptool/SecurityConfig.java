@@ -42,6 +42,7 @@ public class SecurityConfig {
                 .anyExchange().permitAll()
                 //.matchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .and()
+                .csrf().disable()
                 .formLogin();
         return http.build();
     }
