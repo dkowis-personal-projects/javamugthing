@@ -5,13 +5,26 @@ import Html exposing (..)
 import Html.Attributes exposing (class, href)
 import Msgs exposing (Msg)
 import Models exposing (MeetingDetails)
+import RemoteData exposing (WebData)
 
-view : List MeetingDetails -> Html Msg
-view meetingDetails =
+view : WebData (List MeetingDetails) -> Html Msg
+view response =
   div []
     [ nav
-    , list meetingDetails
+    , maybeList response
     ]
+
+maybeList : WebData (List MeetingDetails) -> Html Msg
+maybeList response =
+  case response of
+    RemoteData.NotAsked ->
+      text ""
+    RemoteData.Loading ->
+      text "Loading ..."
+    RemoteData.Success meetingDetails ->
+      list meetingDetails
+    RemoteData.Failure error ->
+      text (toString error)
 
 nav : Html Msg
 nav =

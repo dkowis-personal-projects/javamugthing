@@ -5,6 +5,7 @@ import Msgs exposing (Msg)
 import Models exposing (Model, initialModel)
 import Update exposing (update)
 import View exposing (view)
+import Commands exposing (fetchMeetingDetails)
 
 -- Main application entrance!
 main =
@@ -22,7 +23,7 @@ type alias Flags =
 
 init : Flags -> (Model, Cmd Msg)
 init flags =
-  ({ initialModel | api = flags.apiHost }, Cmd.none)
+  ({ initialModel | api = flags.apiHost }, fetchMeetingDetails flags.apiHost )
 
 -- SUBSCRIPTIONS
 

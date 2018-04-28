@@ -1,4 +1,8 @@
 module Msgs exposing (..)
 
+import Models exposing (MeetingDetails)
+import RemoteData exposing (WebData)
+
+
 type Msg
- = NoOp
+ = OnFetchMeetingDetails (WebData (List MeetingDetails))

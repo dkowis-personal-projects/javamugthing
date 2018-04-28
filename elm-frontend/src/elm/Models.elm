@@ -1,24 +1,18 @@
 module Models exposing (..)
 
 import Date exposing (Date, now)
+import RemoteData exposing (WebData)
 
 type alias Model =
   { api: String
-  , meetings : List MeetingDetails
+  , meetings : WebData (List MeetingDetails)
   }
 
 
 initialModel : Model
 initialModel =
   { api = ""
-  , meetings = [
-    MeetingDetails "1" (MeetupEvent "1" (Date.fromTime 1522891417000) "Sample Meetup")
-      [ (Attendee "david@kow.is" "David Kowis" "Southwest Airlines" True)
-      , (Attendee "jorge@landiv.ar" "Jorge Landivar" "DataDog" True)
-      ]
-      [ (Prize 1 "$50 to amazon" Nothing) ]
-      False
-  ]
+  , meetings = RemoteData.Loading
   }
 
 
