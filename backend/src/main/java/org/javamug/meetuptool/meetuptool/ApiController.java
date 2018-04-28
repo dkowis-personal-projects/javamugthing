@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api")
@@ -37,21 +36,7 @@ public class ApiController {
     @GetMapping("/meetings")
     @ResponseBody
     public Mono<List<MeetingDetails>> listMeetings() {
-        log.debug("Listing meetings both known and from meetup");
-        //TODO: this should hit the meetup API, and pull in meetups that haven't been turned into meetings yet.
-        return meetingDetailsService.listMeetings()
-                .zipWith(meetupService.listRecentMeetups(), (meetings, meetups) -> {
-                    List<MeetingDetails> allMeetings = meetups.stream()
-                            .map(meetup -> {
-                                MeetingDetails details = new MeetingDetails();
-                                details.setMeetup(meetup);
-                                details.setMeetingId(meetup.getId());
-                                return details;
-                            })
-                            .collect(Collectors.toList());
-                    allMeetings.addAll(meetings);
-                    return allMeetings;
-                });
+        return meetingDetailsService.listMeetings();
     }
 
     @GetMapping("/meetings/{id}")

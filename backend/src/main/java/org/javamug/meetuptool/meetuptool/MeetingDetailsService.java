@@ -5,7 +5,9 @@ import org.javamug.meetuptool.meetuptool.domain.Attendee;
 import org.javamug.meetuptool.meetuptool.domain.MeetingDetails;
 import org.javamug.meetuptool.meetuptool.domain.MeetupEvent;
 import org.javamug.meetuptool.meetuptool.domain.Prize;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuples;
 
@@ -25,12 +27,16 @@ import static org.javamug.meetuptool.meetuptool.domain.Fake.APRIL_PRIZES;
 @Slf4j
 public class MeetingDetailsService {
 
+    private final MeetupService meetupService;
     private AtomicLong sequence = new AtomicLong(0);
     private ConcurrentHashMap<String, MeetingDetails> detailsStore = new ConcurrentHashMap<>();
 
     //TODO: don't allow modification to a completed meeting
     //Save one already completed meeting
-    public MeetingDetailsService() {
+    @Autowired
+    public MeetingDetailsService(MeetupService meetupService) {
+        this.meetupService = meetupService;
+        //How did I end up with 3 meetups?
         createMeeting(
                 Mono.just(APRIL_MEETUP),
                 Mono.just(APRIL_ATTENDEES),
@@ -63,7 +69,27 @@ public class MeetingDetailsService {
     }
 
     public Mono<List<MeetingDetails>> listMeetings() {
-        return Mono.just(new ArrayList<>(detailsStore.values()));
+        //Get the meetups from the meetup service as well, and package those into a meeting details
+
+        //TODO: this whole thing feels real bad, need to figure this out...
+        return Mono.just(new ArrayList<>(detailsStore.values()))
+                .zipWith(meetupService.listRecentMeetups(), (meetingDetails, meetupEvents) -> {
+                    //two lists, return the intersection of them
+                    List<String> knownMeetingIds = meetingDetails.stream().map(MeetingDetails::getMeetingId).collect(Collectors.toList());
+                    List<MeetingDetails> meetupMeetingDetails = meetupEvents.stream()
+                            .filter(m -> !knownMeetingIds.contains(m.getId()))
+                            .map(event -> {
+                                MeetingDetails details = new MeetingDetails();
+                                details.setMeetup(event);
+                                details.setMeetingId(event.getId());
+                                return details;
+                            })
+                            .collect(Collectors.toList());
+                    //feels super gross
+                    meetupMeetingDetails.addAll(meetingDetails);
+                    //TODO: sort them by date?
+                    return meetupMeetingDetails;
+                });
     }
 
     public Mono<MeetingDetails> getMeeting(String meetingId) {
