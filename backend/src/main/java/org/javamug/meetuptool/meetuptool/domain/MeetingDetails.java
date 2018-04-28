@@ -11,6 +11,5 @@ public class MeetingDetails {
     private MeetupEvent meetup;
     private List<Attendee> attendees = Collections.emptyList();
     private List<Prize> prizes = Collections.emptyList();
-    private Boolean isComplete = false;
-
+    private Boolean complete = false;
 }

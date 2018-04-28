@@ -102,7 +102,7 @@ public class MeetingDetailsService {
 
     public Mono<MeetingDetails> commitMeeting(Mono<MeetingDetails> detailsMono) {
         return detailsMono.map(details -> {
-            details.setIsComplete(true);
+            details.setComplete(true);
             detailsStore.put(details.getMeetingId(), details);
             return details;
         });
@@ -151,7 +151,7 @@ public class MeetingDetailsService {
     public Mono<MeetingDetails> completeMeeting(String meetingId) {
         return getMeeting(meetingId)
                 .map(meetingDetails -> {
-                    meetingDetails.setIsComplete(true);
+                    meetingDetails.setComplete(true);
 
                     detailsStore.put(meetingDetails.getMeetingId(), meetingDetails);
                     return meetingDetails;

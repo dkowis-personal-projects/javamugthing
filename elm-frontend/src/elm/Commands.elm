@@ -27,7 +27,7 @@ meetingDetailDecoder =
     |> required "meetup" meetupDecoder
     |> required "attendees" attendeesDecoder
     |> required "prizes" prizesDecoder
-    |> required "isComplete" Decode.bool
+    |> required "complete" Decode.bool
 
 meetupDecoder : Decode.Decoder MeetupEvent
 meetupDecoder =
@@ -46,7 +46,7 @@ attendeeDecoder =
     |> required "email" Decode.string
     |> required "name" Decode.string
     |> required "company" Decode.string
-    |> required "isPresent" Decode.bool
+    |> required "present" Decode.bool
 
 prizesDecoder : Decode.Decoder (List Prize)
 prizesDecoder =
@@ -57,4 +57,4 @@ prizeDecoder =
   decode Prize
     |> required "id" Decode.int
     |> required "name" Decode.string
-    |> optional "winner" (nullable attendeeDecoder) Nothing
+    |> required "winner" (nullable attendeeDecoder)

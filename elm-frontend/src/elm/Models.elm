@@ -28,7 +28,7 @@ type alias Attendee =
   { email : String
   , name : String
   , company : String
-  , isPresent : Bool
+  , present : Bool
   }
 
 type alias PrizeId = Int
@@ -44,5 +44,5 @@ type alias MeetingDetails =
   , meetup : MeetupEvent
   , attendees : List Attendee
   , prizes : List Prize
-  , isComplete : Bool
+  , complete : Bool
   }
