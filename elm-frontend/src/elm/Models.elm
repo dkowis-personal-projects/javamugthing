@@ -1,6 +1,6 @@
 module Models exposing (..)
 
-import Date exposing (Date)
+import Date exposing (Date, now)
 
 type alias Model =
   { api: String
@@ -11,7 +11,14 @@ type alias Model =
 initialModel : Model
 initialModel =
   { api = ""
-  , meetings = []
+  , meetings = [
+    MeetingDetails "1" (MeetupEvent "1" (Date.fromTime 1522891417000) "Sample Meetup")
+      [ (Attendee "david@kow.is" "David Kowis" "Southwest Airlines" True)
+      , (Attendee "jorge@landiv.ar" "Jorge Landivar" "DataDog" True)
+      ]
+      [ (Prize 1 "$50 to amazon" Nothing) ]
+      False
+  ]
   }
 
 
