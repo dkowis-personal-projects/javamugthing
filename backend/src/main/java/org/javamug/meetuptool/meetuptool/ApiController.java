@@ -3,7 +3,6 @@ package org.javamug.meetuptool.meetuptool;
 import lombok.extern.slf4j.Slf4j;
 import org.javamug.meetuptool.meetuptool.domain.Attendee;
 import org.javamug.meetuptool.meetuptool.domain.MeetingDetails;
-import org.javamug.meetuptool.meetuptool.domain.MeetupEvent;
 import org.javamug.meetuptool.meetuptool.domain.Prize;
 import org.javamug.meetuptool.meetuptool.exceptions.MeetingNotFoundException;
 import org.javamug.meetuptool.meetuptool.exceptions.MeetupToolException;
