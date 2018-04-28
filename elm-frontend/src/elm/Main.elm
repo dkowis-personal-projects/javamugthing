@@ -6,24 +6,28 @@ import Models exposing (Model, initialModel)
 import Update exposing (update)
 import View exposing (view)
 import Commands exposing (fetchMeetingDetails)
+import Navigation exposing (Location)
+import Routing
 
 -- Main application entrance!
 main =
-  Html.programWithFlags {
-    init = init,
-    subscriptions = subscriptions,
-    view = view,
-    update = update
-  }
+  Navigation.programWithFlags Msgs.OnLocationChange
+    { init = init
+    , view = view
+    , update = update
+    , subscriptions = subscriptions
+    }
 
--- Flags from the javascript side
 type alias Flags =
   { apiHost : String
   }
 
-init : Flags -> (Model, Cmd Msg)
-init flags =
-  ({ initialModel | api = flags.apiHost }, fetchMeetingDetails flags.apiHost )
+init : Flags -> Location -> (Model, Cmd Msg)
+init flags location =
+  let
+    currentRoute = Routing.parseLocation location
+  in
+    (initialModel flags.apiHost currentRoute, fetchMeetingDetails flags.apiHost )
 
 -- SUBSCRIPTIONS
 

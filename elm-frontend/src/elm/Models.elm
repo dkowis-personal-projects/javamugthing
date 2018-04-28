@@ -6,17 +6,27 @@ import RemoteData exposing (WebData)
 type alias Model =
   { api: String
   , meetings : WebData (List MeetingDetails)
+  , route : Route
   }
 
 
-initialModel : Model
-initialModel =
-  { api = ""
+initialModel : String -> Route -> Model
+initialModel api route =
+  { api = api
   , meetings = RemoteData.Loading
+  , route = route
   }
+
+--TODO: how do I handle unauthorized and authorized parts?
+type Route
+  = MeetingsRoute
+  | MeetingRoute MeetingId
+  | NotFoundRoute
+
 
 
 type alias MeetupId = String
+type alias MeetingId = String
 
 type alias MeetupEvent =
   { id : MeetupId
@@ -40,7 +50,7 @@ type alias Prize =
   }
 
 type alias MeetingDetails =
-  { meetingId : String
+  { meetingId : MeetingId
   , meetup : MeetupEvent
   , attendees : List Attendee
   , prizes : List Prize
