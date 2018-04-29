@@ -5,6 +5,15 @@ Useful software for the Java Metroplex Users Group.
 ## TODO
 
 * A better name
+    * Meetuper
+    * JaMeetup
+    * MeetupManager
+    * MeetupArchitect
+    * Meetupgineer
+    * Mugger
+    * Meetups
+    * MeetupMarketer
+    * LetsMeetup
 * Admin UI
   * View Meetup Events (according to meetup.com api)
     * add attendee that didn't get to RSVP on meetup
