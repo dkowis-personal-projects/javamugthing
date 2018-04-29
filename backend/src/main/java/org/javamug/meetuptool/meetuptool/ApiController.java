@@ -53,10 +53,10 @@ public class ApiController {
                 .switchIfEmpty(Mono.error(new MeetingNotFoundException(id)));
     }
 
-    @PostMapping("/meetings/{meetingId}/start")
+    @PostMapping("/meetings/{meetingId}/import")
     @ResponseBody
-    public Mono<MeetingDetails> startMeeting(@PathVariable("meetingId") String id) {
-        log.debug("Starting meeting for {}", id);
+    public Mono<MeetingDetails> importMeeting(@PathVariable("meetingId") String id) {
+        log.debug("importing meeting for {}", id);
         //Time to load all the things
         //Get the events from meetup
         return meetingDetailsService.createMeeting(

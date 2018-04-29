@@ -59,3 +59,21 @@ prizeDecoder =
     |> required "id" Decode.int
     |> required "name" Decode.string
     |> required "winner" (nullable attendeeDecoder)
+
+-- Meeting commands
+importMeetingRequest : String -> MeetingDetails -> Http.Request MeetingDetails
+importMeetingRequest baseUrl meetingDetails =
+  Http.request
+    { body = Http.emptyBody
+    , expect = Http.expectJson meetingDetailDecoder
+    , headers = []
+    , method = "POST"
+    , timeout = Nothing
+    , url = baseUrl ++ "/api/meetings/" ++ meetingDetails.meetingId ++ "/import"
+    , withCredentials = False
+    }
+
+importMeetingCmd : String -> MeetingDetails -> Cmd Msg
+importMeetingCmd baseUrl meetingDetails =
+  importMeetingRequest baseUrl meetingDetails
+   |> Http.send Msgs.OnMeetingImport
