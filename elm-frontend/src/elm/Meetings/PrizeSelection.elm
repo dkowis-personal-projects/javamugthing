@@ -2,6 +2,7 @@ module Meetings.PrizeSelection exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href, scope, type_)
+import Html.Events exposing (onClick)
 import Msgs exposing (Msg)
 import Models exposing (MeetingDetails, Prize)
 
@@ -30,7 +31,7 @@ importDiv meetingDetails =
   else
     div [class "alert alert-primary"] [
     p [] [text ( meetingDetails.meetup.topic ++ " needs to be imported from meetup!")]
-    , button [class "btn btn-primary"] [text "IMPORT"]
+    , button [class "btn btn-primary", onClick (Msgs.ImportMeeting meetingDetails) ] [text "IMPORT"]
     ]
 
 prizeForm : MeetingDetails -> Html Msg
