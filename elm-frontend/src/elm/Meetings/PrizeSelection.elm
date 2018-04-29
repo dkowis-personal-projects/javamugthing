@@ -1,7 +1,7 @@
 module Meetings.PrizeSelection exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (class, href)
 import Msgs exposing (Msg)
 import Models exposing (MeetingDetails)
 
@@ -15,7 +15,10 @@ view model =
 nav : MeetingDetails -> Html Msg
 nav model =
   div [ ]
-    [ div [] [ h1 [] [ text ("Prize Selection for " ++ model.meetup.topic)] ] ]
+    [ div [] [ h1 [] [
+     a [href "#meetings"] [text "Meetings"]
+     , text (" > " ++ model.meetup.topic)
+     ] ] ]
 
 prizeForm : MeetingDetails -> Html Msg
 prizeForm model =

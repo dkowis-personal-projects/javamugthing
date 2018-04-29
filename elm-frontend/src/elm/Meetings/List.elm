@@ -38,7 +38,7 @@ list meetingDetails =
 
 detailsRow : MeetingDetails -> Html Msg
 detailsRow details =
-  a [href "#", class "list-group-item" ]
+  a [href ("#meetings/" ++ details.meetingId), class "list-group-item" ]
     [ h5 [class "mb-1"] [ text ((dateFormat details.meetup.date) ++ " " ++ details.meetup.topic) ]
     , p [class "mb-1" ] [ text ((toString (List.length details.attendees)) ++ " Attendees") ]
     ]
