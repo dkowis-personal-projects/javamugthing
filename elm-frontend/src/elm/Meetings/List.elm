@@ -10,7 +10,7 @@ import RemoteData exposing (WebData)
 view : WebData (List MeetingDetails) -> Html Msg
 view response =
   div []
-    [ nav
+    [ myNav
     , maybeList response
     ]
 
@@ -26,10 +26,13 @@ maybeList response =
     RemoteData.Failure error ->
       text (toString error)
 
-nav : Html Msg
-nav =
-  div [ ]
-    [ div [] [ h1 [] [ text "Meetings"] ] ]
+myNav : Html Msg
+myNav =
+  nav [class "breadcrumb"]
+    [ ol [class "breadcrumb"]
+      [ li [class "breadcrumb-item active"] [ text "Meetings" ]
+      ]
+    ]
 
 list : List MeetingDetails -> Html Msg
 list meetingDetails =

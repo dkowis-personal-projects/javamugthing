@@ -1,16 +1,17 @@
 module View exposing (..)
 
 import Html exposing (Html, div, text)
+import Html.Attributes exposing (class)
 import Msgs exposing (Msg)
 import Models exposing (Model, MeetingId)
 import Meetings.List
 import Meetings.PrizeSelection
 import RemoteData
 
-
+--Parent container, everything starts in this
 view : Model -> Html Msg
 view model =
-  div [] [page model]
+  div [class "container"] [page model]
 
 
 page : Model -> Html Msg

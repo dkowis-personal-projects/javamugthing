@@ -42,6 +42,8 @@ public class MeetingDetailsService {
                 Mono.just(APRIL_ATTENDEES),
                 Mono.just(APRIL_PRIZES)
         ).block();//CONSUME IT
+
+        detailsStore.get("0").setComplete(true);
     }
 
     //Create a meeting given the information.
