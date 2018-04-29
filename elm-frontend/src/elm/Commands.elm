@@ -28,6 +28,7 @@ meetingDetailDecoder =
     |> required "attendees" attendeesDecoder
     |> required "prizes" prizesDecoder
     |> required "complete" Decode.bool
+    |> required "imported" Decode.bool
 
 meetupDecoder : Decode.Decoder MeetupEvent
 meetupDecoder =

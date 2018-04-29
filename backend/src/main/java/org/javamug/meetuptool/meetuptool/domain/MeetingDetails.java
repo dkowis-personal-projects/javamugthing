@@ -12,4 +12,5 @@ public class MeetingDetails {
     private List<Attendee> attendees = Collections.emptyList();
     private List<Prize> prizes = Collections.emptyList();
     private Boolean complete = false;
+    private Boolean imported = false; //true when it's been loaded from meetup
 }

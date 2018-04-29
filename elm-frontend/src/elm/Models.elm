@@ -55,4 +55,5 @@ type alias MeetingDetails =
   , attendees : List Attendee
   , prizes : List Prize
   , complete : Bool
+  , imported : Bool
   }

@@ -9,6 +9,7 @@ view : MeetingDetails -> Html Msg
 view model =
   div []
     [ myNav model
+    , importDiv model
     , prizeForm model
     ]
 
@@ -19,6 +20,17 @@ myNav model =
       [ li [class "breadcrumb-item"] [ a [href "#meetings"] [ text "Meetings" ] ]
       , li [class "breadcrumb-item active" ] [text model.meetup.topic ]
       ]
+    ]
+
+
+importDiv : MeetingDetails -> Html Msg
+importDiv meetingDetails =
+  if meetingDetails.imported then
+    div [] []
+  else
+    div [class "alert alert-primary"] [
+    p [] [text ( meetingDetails.meetup.topic ++ " needs to be imported from meetup!")]
+    , button [class "btn btn-primary"] [text "IMPORT"]
     ]
 
 prizeForm : MeetingDetails -> Html Msg
