@@ -8,9 +8,10 @@ Run the spring boot app, listening on localhost:8080.
 The java application development process is the same as all others. CORS
 has to be disabled in Dev mode, because elm-reactor doesn't proxy the backend calls.
 
-cd into `elm-frontend` and start `elm-reactor`
-
-navigate in your browser to `src/html/dev.html`
+- cd into `elm-frontend`
+- run `elm-package install`
+- and start `elm-reactor`
+- then navigate in your browser to `http://localhost:8000/src/html/dev.html`
 
 That will compile and stuff your elm frontend!
 
