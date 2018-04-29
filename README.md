@@ -4,16 +4,11 @@ Useful software for the Java Metroplex Users Group.
 
 ## Run in development mode
 
-Run the spring boot app, listening on localhost:8080.
+Run the spring boot app, this is the API, listening on localhost:8080.
 The java application development process is the same as all others. CORS
 has to be disabled in Dev mode, because elm-reactor doesn't proxy the backend calls.
 
-- cd into `elm-frontend`
-- run `elm-package install`
-- and start `elm-reactor`
-- then navigate in your browser to `http://localhost:8000/src/html/dev.html`
-
-That will compile and stuff your elm frontend!
+Then, cd into `elm-frontend`, run `elm-package install`, and start `elm-reactor`. That will compile and stuff your elm frontend! Finally, navigate in your browser to `http://localhost:8000/src/html/dev.html`.
 
 ## TODO
 
