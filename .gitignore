@@ -92,5 +92,3 @@ gradle-app.setting
 
 # End of https://www.gitignore.io/api/elm,gradle,intellij+all
 
-*.class
-*.project
