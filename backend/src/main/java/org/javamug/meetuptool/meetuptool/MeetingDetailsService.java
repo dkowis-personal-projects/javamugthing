@@ -66,6 +66,7 @@ public class MeetingDetailsService {
         }).doOnNext(details -> {
             log.debug("Saving the meeting {}", details);
             //save it! as a side effect, and return it
+            details.setImported(true);
             detailsStore.put(details.getMeetingId(), details);
         });
     }

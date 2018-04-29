@@ -76,4 +76,4 @@ importMeetingRequest baseUrl meetingDetails =
 importMeetingCmd : String -> MeetingDetails -> Cmd Msg
 importMeetingCmd baseUrl meetingDetails =
   importMeetingRequest baseUrl meetingDetails
-   |> Http.send Msgs.OnMeetingImport
+   |> Http.send Msgs.OnImportMeeting
