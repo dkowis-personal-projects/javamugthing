@@ -24,7 +24,6 @@ type Route
   | NotFoundRoute
 
 
-
 type alias MeetupId = String
 type alias MeetingId = String
 
@@ -56,5 +55,8 @@ type alias MeetingDetails =
   , prizes : List Prize
   , complete : Bool
   , imported : Bool --TODO: don't really need this any more
-  , importing: Maybe (WebData Bool) -- It's either loaded successfully, or not, that's all (or we don't need to)
+  , importing: Maybe (WebData MeetingDetails) -- It's either loaded successfully, or not, that's all (or we don't need to)
   }
+
+--Recursive type, yeah I don't know what I'm doing here...
+type ImportedMeeting = ImportedMeeting (WebData MeetingDetails)
