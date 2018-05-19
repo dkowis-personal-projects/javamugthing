@@ -3,6 +3,7 @@ module Meetings.List exposing (..)
 import Date exposing (Date)
 import Html exposing (..)
 import Html.Attributes exposing (class, disabled, href, type_)
+import Html.Events exposing (onClick)
 import Msgs exposing (Msg)
 import Models exposing (MeetingDetails)
 import RemoteData exposing (WebData, RemoteData)
@@ -64,7 +65,7 @@ importButton details further =
     --Have to look at the status of the imported maybe
     case details.importing of
       Just (RemoteData.NotAsked) ->
-        (button [class "btn btn-primary import_button", type_ "button"] [text "IMPORT"] ) :: further
+        (button [class "btn btn-primary import_button", type_ "button", onClick (Msgs.ImportMeeting details)] [text "IMPORT"] ) :: further
       Just (RemoteData.Loading) ->
         (button [class "btn btn-primary import_button", disabled True, type_ "button"] [text "LOADING..."]) :: further
       Just (RemoteData.Success meeting) ->
