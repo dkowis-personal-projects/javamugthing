@@ -2,10 +2,10 @@ module Meetings.List exposing (..)
 
 import Date exposing (Date)
 import Html exposing (..)
-import Html.Attributes exposing (class, href, type_)
+import Html.Attributes exposing (class, disabled, href, type_)
 import Msgs exposing (Msg)
 import Models exposing (MeetingDetails)
-import RemoteData exposing (WebData)
+import RemoteData exposing (WebData, RemoteData)
 
 view : WebData (List MeetingDetails) -> Html Msg
 view response =
@@ -58,8 +58,18 @@ dateFormat date =
 importButton : MeetingDetails -> List (Html Msg) -> List (Html Msg)
 importButton details further =
   if details.imported then
+    --Already imported, don't care! no button!
     further
   else
     --Have to look at the status of the imported maybe
-    
-    (button [class "btn btn-primary import_button", type_ "button"] [text "IMPORT"] ) :: further
+    case details.importing of
+      Just (RemoteData.NotAsked) ->
+        (button [class "btn btn-primary import_button", type_ "button"] [text "IMPORT"] ) :: further
+      Just (RemoteData.Loading) ->
+        (button [class "btn btn-primary import_button", disabled True, type_ "button"] [text "LOADING..."]) :: further
+      Just (RemoteData.Success meeting) ->
+        (button [class "btn btn-primary import_button", disabled True, type_ "button"] [text "SUCCESS!"]) :: further
+      Just (RemoteData.Failure err) ->
+        (button [class "btn btn-primary import_button", type_ "button"] [text (toString err)]) :: further
+      Nothing -> --Crap it defaults to this, have to fix this loading somehow
+        further --Won't get here thanks to the details.imported (lousy model tho)
