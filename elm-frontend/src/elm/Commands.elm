@@ -7,7 +7,7 @@ import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
 import Json.Decode.Extra as JsonExtra
 import Msgs exposing (Msg)
 import Models exposing (MeetingDetails, MeetupEvent, Attendee, Prize)
-import RemoteData
+import RemoteData exposing (WebData)
 
 fetchMeetingDetails : String -> Cmd Msg
 fetchMeetingDetails apiBase =
@@ -30,6 +30,20 @@ meetingDetailDecoder =
     |> required "complete" Decode.bool
     |> required "imported" Decode.bool
     |> hardcoded Nothing --the maybe Importing
+
+--Custom decoder for the Nothing or Just (RemoteData.NotAsked)
+importedDecoder : Decode.Decoder (Maybe (WebData Bool))
+importedDecoder =
+  let
+    convert: Bool -> Decode.Decoder (Maybe (WebData Bool))
+    convert raw =
+      if raw then
+        Decode.succeed Nothing
+      else
+        Decode.succeed (Just RemoteData.NotAsked)
+  in
+    Decode.bool |> Decode.andThen convert
+
 
 meetupDecoder : Decode.Decoder MeetupEvent
 meetupDecoder =
