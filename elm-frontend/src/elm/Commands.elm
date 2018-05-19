@@ -29,7 +29,7 @@ meetingDetailDecoder =
     |> required "prizes" prizesDecoder
     |> required "complete" Decode.bool
     |> required "imported" Decode.bool
-    |> hardcoded Nothing --the maybe Importing
+    |> required "imported" importedDecoder
 
 --Custom decoder for the Nothing or Just (RemoteData.NotAsked)
 importedDecoder : Decode.Decoder (Maybe (WebData Bool))
