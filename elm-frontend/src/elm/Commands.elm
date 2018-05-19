@@ -3,7 +3,7 @@ module Commands exposing (..)
 import Date exposing (Date)
 import Http
 import Json.Decode as Decode exposing (nullable)
-import Json.Decode.Pipeline exposing (decode, required, optional)
+import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
 import Json.Decode.Extra as JsonExtra
 import Msgs exposing (Msg)
 import Models exposing (MeetingDetails, MeetupEvent, Attendee, Prize)
@@ -29,6 +29,7 @@ meetingDetailDecoder =
     |> required "prizes" prizesDecoder
     |> required "complete" Decode.bool
     |> required "imported" Decode.bool
+    |> hardcoded Nothing --the maybe Importing
 
 meetupDecoder : Decode.Decoder MeetupEvent
 meetupDecoder =

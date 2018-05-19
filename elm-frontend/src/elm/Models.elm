@@ -56,4 +56,5 @@ type alias MeetingDetails =
   , prizes : List Prize
   , complete : Bool
   , imported : Bool
+  , importing: Maybe (WebData Bool) -- It's either loaded successfully, or not, that's all (or we don't need to)
   }
