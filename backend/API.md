@@ -47,3 +47,19 @@ DELETE | `/meetings/#id/giveaway/prizes/#id/attendees` | remove winner from priz
 POST | `/meetings/#id/giveaway/prizes/#id/attendees` | put a winner on that prize (might overload to also mark as did not want, and not present)
 
 
+## Unauthenticated user API
+
+### meeting details
+| method| path | notes |
+| --:| -- | -- |
+GET | `/meetings/` | List meetings, open and closed
+GET | `/meetings/#id` | meeting details
+
+
+### watch current meeting
+| method| path | notes |
+| --:| -- | -- |
+GET | `/meetings/#id/giveaway` | should update details as they happen
+GET | `/meetings/#id/giveaway/#email` | provide a live notification if you win a thing!
+
+Will need websockets and payloads in those to make it happen
