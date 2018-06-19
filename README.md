@@ -26,17 +26,30 @@ That will compile and stuff your elm frontend!
     * Meetups
     * MeetupMarketer
     * LetsMeetup
+
 * Admin UI
-  * View Meetup Events (according to meetup.com api)
-    * add attendee that didn't get to RSVP on meetup
-    * pre-load meetup attendees
-    * update meetup attendees
-    * 
-  * Start a giveaway thing
-    * Select attendee
+  * show past Meetups, read-only
+  * have a way to import a coming meetup
+  * show open meetups
+    * show import problems
+    * add attendees manually
+    * idempotently update again
+    * start the giveaway
+  * Default prizes settings (CRUD)
+  * Giveaway UI
+    * default prizes are pre-loaded
+    * Select attendee to win
     * Note a attendee as not-present
     * Note a attendee as did-not-want
-    * Complete giveaway
+    * Complete giveaway -- all done
+    * add random prize
+    * remove prize
   * View previous giveaways
     * Export attendee list
 
+* Regular UI
+  * see past meetups and winners
+  * see current meetup, updating live
+
+* Notification UI for mobile. 
+  * if you won, flash and vibrate!
