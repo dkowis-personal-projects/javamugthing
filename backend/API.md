@@ -41,10 +41,8 @@ DELETE | `/meetings/#id/giveaway/prizes/#id` | remove a prize, only for this giv
 ### winners of prizes in a giveaway
 | method| path | notes |
 | --:| -- | -- |
-PUT | `/meetings/#id/giveaway/prizes/#id/attendees/#id` | update prize winner (not necessary?) Did not want?
 GET | `/meetings/#id/giveaway/prizes/#id/attendees` | list attendees of this meeting that can win this prize
-DELETE | `/meetings/#id/giveaway/prizes/#id/attendees` | remove winner from prize (maybe with did-not-want?) (not present?)
-POST | `/meetings/#id/giveaway/prizes/#id/attendees` | put a winner on that prize (might overload to also mark as did not want, and not present)
+POST | `/meetings/#id/giveaway/prizes/#id/attendees` | Command to win, remove, didnotwant, or notpresent
 
 
 ## Unauthenticated user API

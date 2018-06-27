@@ -1,5 +1,6 @@
 package org.javamug.meetuptool.meetuptool.giveaway;
 
+import org.javamug.meetuptool.meetuptool.meetings.MeetingAttendee;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -43,5 +44,25 @@ public class GiveawayPrizeController {
     }
 
 
+    @GetMapping("/{prizeId}/attendees")
+    @ResponseBody
+    public Mono<List<MeetingAttendee>> listEligibleAttendees(@RequestParam("meetingId") String meetingId,
+                                                             @RequestParam("prizeId") String prizeId) {
+
+        return Mono.empty();
+    }
+
+    /**
+     * This one is less restful, but it really fits a remote procedure call better anyway.
+     * Depending on the payload posted, do the right things.
+     */
+    @PostMapping("/{prizeId}/attendees")
+    @ResponseBody
+    public Mono<List<MeetingAttendee>> manipulatePrizeAttendee(@RequestParam("meetingId") String meetingId,
+                                                             @RequestParam("prizeId") String prizeId,
+                                                               @RequestBody PrizeAttendeeCommand prizeAttendeeCommand) {
+
+        return Mono.empty();
+    }
 
 }
