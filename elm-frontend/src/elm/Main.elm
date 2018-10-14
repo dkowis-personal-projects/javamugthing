@@ -1,36 +1,88 @@
-module Main exposing (..)
+import Browser
+import Browser.Navigation as Nav
+import Html exposing (..)
+import Html.Attributes exposing (..)
+import Url
 
-import Html exposing (programWithFlags)
-import Msgs exposing (Msg)
-import Models exposing (Model, initialModel)
-import Update exposing (update)
-import View exposing (view)
-import Commands exposing (fetchMeetingDetails)
-import Navigation exposing (Location)
-import Routing
 
--- Main application entrance!
+
+-- MAIN
+
+main : Program () Model Msg
 main =
-  Navigation.programWithFlags Msgs.OnLocationChange
+  Browser.application
     { init = init
     , view = view
     , update = update
     , subscriptions = subscriptions
+    , onUrlChange = UrlChanged
+    , onUrlRequest = LinkClicked
     }
 
-type alias Flags =
-  { apiHost : String
+
+
+-- MODEL
+-- The
+type alias Model =
+  { key : Nav.Key
+  , url : Url.Url
   }
 
-init : Flags -> Location -> (Model, Cmd Msg)
-init flags location =
-  let
-    currentRoute = Routing.parseLocation location
-  in
-    (initialModel flags.apiHost currentRoute, fetchMeetingDetails flags.apiHost )
+
+init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init flags url key =
+  ( Model key url, Cmd.none )
+
+
+-- UPDATE
+-- Commands that can be sent for stuff
+type Msg
+  = LinkClicked Browser.UrlRequest
+  | UrlChanged Url.Url
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+  case msg of
+    LinkClicked urlRequest ->
+      case urlRequest of
+        Browser.Internal url ->
+          ( model, Nav.pushUrl model.key (Url.toString url) )
+
+        Browser.External href ->
+          ( model, Nav.load href )
+
+    UrlChanged url ->
+      ( { model | url = url }
+      , Cmd.none
+      )
+
+
 
 -- SUBSCRIPTIONS
-
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
   Sub.none
+
+
+-- VIEW
+view : Model -> Browser.Document Msg
+view model =
+  { title = "URL Interceptor"
+  , body =
+      [ text "The current URL is: "
+      , b [] [ text (Url.toString model.url) ]
+      , ul []
+          [ viewLink "/home"
+          , viewLink "/profile"
+          , viewLink "/reviews/the-century-of-the-self"
+          , viewLink "/reviews/public-opinion"
+          , viewLink "/reviews/shah-of-shahs"
+          ]
+      ]
+  }
+
+
+viewLink : String -> Html msg
+viewLink path =
+  li [] [ a [ href path ] [ text path ] ]
